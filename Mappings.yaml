@@ -1,0 +1,25 @@
+Parameters:
+  EnvironmentName:
+    Description: Environment Name
+    Type: String
+    AllowedValues: [development,production]
+    ConstraintDescription: must be development or production
+
+Mappings:
+  AWSRegion:
+    us-east-1:
+      HVM64: ami-6869aa05
+
+EnvironmentToInstanceType:
+  development:
+    instanceType: t2.micro
+  production:
+    instanceType: t2.small
+
+Resources:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+
+    Properties:
+      InstanceType: !FindInMap [EnvironmentToInstanceType, !Ref 'EnvironmentName', instanceType]
+      ImageId: !FindInMap [AWSRegionArch2AMI, !Ref 'AWS::Region', HVM64]
